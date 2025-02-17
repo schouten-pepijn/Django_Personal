@@ -1,0 +1,18 @@
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidly</title>
+</head>
+<body>
+    <nav class="navbar bg-body-tertiary">
+        <a class="navbar-brand" href="#">Vidly</a>
+    </nav>
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
