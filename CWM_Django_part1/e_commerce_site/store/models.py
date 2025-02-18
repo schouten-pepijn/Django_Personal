@@ -49,12 +49,6 @@ class Customer(models.Model):
         choices=MEMBERSHIP_CHOICES,
         default=MEMBERSHIP_CHOICES[0][0]
     )
-    
-    class Meta:
-        db_table = 'store_customers'
-        indexes = [
-            models.Index(fields=['last_name', 'first_name']),
-        ]
 
 
 class Order(models.Model):
