@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from django.db.models import Q, F
 
-from store.models import Product, OrderItem, Order
+from store.models import Collection, Product, OrderItem, Order
+
+from django.contrib.contenttypes.models import ContentType
+from store.models import Product
+from tags.models import TaggedItem
 
 
 def say_hello(request):
@@ -24,9 +28,13 @@ def say_hello(request):
     #     .filter(id__in=querysetOrderItems) \
     #         .order_by('id')
     
-    # queryset = Order.objects \
-    #     .select_related('customer') \
-    #         .prefetch_related('orderitem_set__product') \
-    #             .order_by('-placed_at')[:5]
+    queryset = Order.objects \
+        .select_related('customer') \
+            .prefetch_related('orderitem_set__product') \
+                .order_by('-placed_at')[:5]
+    
+    # ContentType.objects.get_for_models(Product, TaggedItem)
+    
+
 
     return render(request, 'hello.html', {'name': 'Mosh', 'orders': list(queryset)})
