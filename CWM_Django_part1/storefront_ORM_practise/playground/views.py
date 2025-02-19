@@ -34,7 +34,5 @@ def say_hello(request):
                 .order_by('-placed_at')[:5]
     
     # ContentType.objects.get_for_models(Product, TaggedItem)
-    
-
 
     return render(request, 'hello.html', {'name': 'Mosh', 'orders': list(queryset)})
