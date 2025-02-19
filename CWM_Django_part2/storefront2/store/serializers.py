@@ -9,6 +9,20 @@ class CollectionSerializer(serializers.Serializer):
     
     
 
+class ProductSerializer(serializers.ModelSerializer):
+    collection = CollectionSerializer()
+    price_with_tax = serializers.SerializerMethodField(method_name='get_price_with_tax')
+    
+    def get_price_with_tax(self, obj: Product) -> float:
+        return obj.unit_price * Decimal(1.1)
+    
+    class Meta:
+        model = Product
+        fields = ['id', 'title', 'unit_price', 'price_with_tax', 'collection']
+
+
+# verbose and repeated implementation
+"""
 class ProductSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField(max_length=255)
@@ -37,3 +51,4 @@ class ProductSerializer(serializers.Serializer):
 
     def get_price_with_tax(self, obj: Product) -> float:
         return obj.unit_price * Decimal(1.1)
+"""
