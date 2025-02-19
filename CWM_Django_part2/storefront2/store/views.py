@@ -21,7 +21,7 @@ def product_detail_legacy(request, id):
 def product_list(request):
     try:
         queryset = Product.objects.all()
-        serializer = ProductSerializer(queryset, many=True)
+        serializer = ProductSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
     except Product.DoesNotExist:
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -33,3 +33,8 @@ def product_detail(request, id):
     serializer = ProductSerializer(product)
     data = serializer.data
     return Response(data)
+
+
+@api_view()
+def collection_detail(request, pk):
+    return Response('ok')

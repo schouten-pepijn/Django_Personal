@@ -7,7 +7,7 @@ class CollectionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField(max_length=255)
     
-
+    
 
 class ProductSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -25,6 +25,14 @@ class ProductSerializer(serializers.Serializer):
     
     # nested serializer
     collection_nested = CollectionSerializer(source='collection')
+    
+    # Hyperlink serializer
+    collection_link = serializers.HyperlinkedRelatedField(
+        queryset=Collection.objects.all(),
+        view_name='collection-detail',
+        lookup_field='pk',
+        source='collection'
+    )
 
 
     def get_price_with_tax(self, obj: Product) -> float:

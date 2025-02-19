@@ -8,4 +8,6 @@ urlpatterns = [
     
     path('products/<int:id>', views.product_detail),
     path('products/legacy/<int:id>', views.product_detail_legacy),
+    
+    path('collections/<int:pk>', views.collection_detail, name='collection-detail'),
 ]
