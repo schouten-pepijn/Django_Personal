@@ -31,9 +31,9 @@ class Product(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
     promotions = models.ManyToManyField(Promotion, blank=True)
-    
+
     def __str__(self) -> str:
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ['title']
