@@ -13,7 +13,7 @@ class Collection(models.Model):
         'Product', on_delete=models.SET_NULL, null=True, related_name='+', blank=True)
 
     def __str__(self) -> str:
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ['title']

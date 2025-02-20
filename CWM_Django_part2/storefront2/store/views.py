@@ -26,7 +26,7 @@ def product_list(request):
             queryset = Product.objects.all()
             serializer = ProductSerializer(queryset, many=True, context={'request': request})
             return Response(serializer.data)
-        except Product.DoesNotExist:
+        except:
             return Response(status=status.HTTP_204_NO_CONTENT)
     # Deserializing
     elif request.method == 'POST':
