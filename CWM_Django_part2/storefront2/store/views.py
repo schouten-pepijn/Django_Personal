@@ -17,22 +17,43 @@ def product_detail_legacy(request, id):
     return HttpResponse(id)
 
 
-@api_view()
+# add posting (adding)
+@api_view(['GET', 'POST'])
 def product_list(request):
-    try:
-        queryset = Product.objects.all()
-        serializer = ProductSerializer(queryset, many=True, context={'request': request})
-        return Response(serializer.data)
-    except Product.DoesNotExist:
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    # Serializing
+    if request.method == 'GET':
+        try:
+            queryset = Product.objects.all()
+            serializer = ProductSerializer(queryset, many=True, context={'request': request})
+            return Response(serializer.data)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+    # Deserializing
+    elif request.method == 'POST':
+        serializer = ProductSerializer(data=request.data)
+        # Validate the post request
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view()
+# add put (update)
+@api_view(['GET', 'PUT'])
 def product_detail(request, id):
     product = get_object_or_404(Product, pk=id)
-    serializer = ProductSerializer(product)
-    data = serializer.data
-    return Response(data)
+    # Serializing
+    if request.method == 'GET':
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+    # Deserializing
+    elif request.method == 'PUT':
+        serializer = ProductSerializer(
+            product,
+            data=request.data,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 @api_view()
