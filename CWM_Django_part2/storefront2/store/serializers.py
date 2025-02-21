@@ -13,7 +13,7 @@ class ProductSerializer(serializers.ModelSerializer):
     price_with_tax = serializers.SerializerMethodField(method_name='get_price_with_tax')
 
     def get_price_with_tax(self, obj: Product) -> float:
-        return obj.unit_price * Decimal(1.1)
+        return obj.unit_price * Decimal(1.2)
 
     class Meta:
         model = Product
