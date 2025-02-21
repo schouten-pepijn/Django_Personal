@@ -3,17 +3,20 @@ from rest_framework import serializers
 from .models import Product, Collection
 
 # nested serializer
-class CollectionSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    title = serializers.CharField(max_length=255)
+class CollectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Collection
+        fields = ['id', 'title', 'product_count']
+        
+    product_count = serializers.IntegerField()
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    collection = CollectionSerializer()
+    # collection = CollectionSerializer()
     price_with_tax = serializers.SerializerMethodField(method_name='get_price_with_tax')
 
     def get_price_with_tax(self, obj: Product) -> float:
-        return obj.unit_price * Decimal(1.2)
+        return obj.unit_price * Decimal(1.1)
 
     class Meta:
         model = Product
