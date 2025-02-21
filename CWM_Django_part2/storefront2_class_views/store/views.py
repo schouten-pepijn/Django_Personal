@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.db.models import Count
 
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -25,6 +25,21 @@ class ProductList(ListCreateAPIView):
         return {'request': self.request}
 
 
+class ProductDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+    # customize generic view
+      
+    def delete(self, request, id):
+        product = get_object_or_404(Product, pk=id)
+        if product.orderitems.count() > 0:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+"""
 class ProductDetail(APIView):
     def get(self, request, id):
         product = get_object_or_404(Product, pk=id)
@@ -47,7 +62,7 @@ class ProductDetail(APIView):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
+"""
 
 # Create your views here.
 def product_list_legacy(request):
