@@ -52,8 +52,9 @@ class ProductSerializer(serializers.Serializer):
         lookup_field='pk',
         source='collection'
     )
+"""
 
-
+"""
     def get_price_with_tax(self, obj: Product) -> float:
         return obj.unit_price * Decimal(1.1)
 """
