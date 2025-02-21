@@ -28,9 +28,9 @@ class ProductList(ListCreateAPIView):
 class ProductDetail(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    lookup_field = 'id'
     
     # customize generic view
-      
     def delete(self, request, id):
         product = get_object_or_404(Product, pk=id)
         if product.orderitems.count() > 0:
@@ -99,8 +99,24 @@ def collection_list(request):
 """
 
 
+class CollectionDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Collection.objects.annotate(
+        product_count=Count('products')
+    )
+    serializer_class = CollectionSerializer
+    
+    def delete(self, request, pk):
+        collection = get_object_or_404(Collection, pk=pk)
+        if collection.products.count() > 0:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        collection.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
+"""
 @api_view(['GET', 'PUT', 'DELETE'])
 def collection_detail(request, pk):
+    
     collection = get_object_or_404(
         Collection.objects.annotate(
             product_count=Count('products')
@@ -122,7 +138,7 @@ def collection_detail(request, pk):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         collection.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
+"""
 
 
 """
