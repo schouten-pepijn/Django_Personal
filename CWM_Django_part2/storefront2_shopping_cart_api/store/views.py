@@ -17,14 +17,13 @@ from .pagination import DefaultPagination
 
 from .filters import ProductFilter
 from .models import Cart, Product, Collection, OrderItem, Review, CartItem
-from .serializers import AddCartItemSerializer, CartItemSerializer, ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer
+from .serializers import AddCartItemSerializer, CartItemSerializer, ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, UpdateCartItemSerializer
 
 
 # Combine the logic of the complete API in one set
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
     filter_backends = [
         DjangoFilterBackend,
         SearchFilter,
@@ -36,7 +35,6 @@ class ProductViewSet(ModelViewSet):
     ordering_fields = ['unit_price', 'last_update']
     
     # pagination_class = PageNumberPagination
-
     pagination_class = DefaultPagination
 
     def get_serializer_context(self):
@@ -51,7 +49,6 @@ class ProductViewSet(ModelViewSet):
 class CollectionViewSet(ReadOnlyModelViewSet):
     queryset = Collection.objects.annotate(product_count=Count('products')).all()
     serializer_class = CollectionSerializer
-
 
     def destroy(self ,request, *args, **kwargs):
         collection = get_object_or_404(Collection, pk=kwargs['pk'])
@@ -74,18 +71,20 @@ class ReviewViewSet(ModelViewSet):
 class CartViewSet(CreateModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Cart.objects.prefetch_related('items__product').all()
     serializer_class = CartSerializer
-    
-    
+
+
 class CartItemViewSet(ModelViewSet):
-    serializer_class = CartItemSerializer
-    
+    http_method_names = ['get', 'post', 'patch', 'delete']
+
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return AddCartItemSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateCartItemSerializer
         return CartItemSerializer
-    
+
     def get_serializer_context(self):
         return {'cart_id': self.kwargs['cart_pk']}
-    
+
     def get_queryset(self):
         return CartItem.objects.filter(cart_id=self.kwargs['cart_pk']).select_related('product')
