@@ -21,9 +21,6 @@ pprint(products_router.urls)
 
 # URLConf
 urlpatterns = [
-    path('products/legacy', views.product_list_legacy),
-    path('products/legacy/<int:id>', views.product_detail_legacy),
-    
     path('', include(router.urls)),
     path('', include(products_router.urls)),
     
