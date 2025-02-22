@@ -6,17 +6,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.mixins import CreateModelMixin, DestroyModelMixin
 
 from .pagination import DefaultPagination
 
 from .filters import ProductFilter
-from .models import Product, Collection, OrderItem, Review
-from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer
+from .models import Cart, Product, Collection, OrderItem, Review, CartItem
+from .serializers import CartItemSerializer, ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer
 
 
 # Combine the logic of the complete API in one set
@@ -68,3 +69,14 @@ class ReviewViewSet(ModelViewSet):
     def get_serializer_context(self):
         product_id = self.kwargs['product_pk']
         return {'product_id': product_id}
+
+
+class CartViewSet(CreateModelMixin, DestroyModelMixin, GenericViewSet):
+    queryset = Cart.objects.prefetch_related('items__product').all()
+    serializer_class = CartSerializer
+    
+    
+class CartItemViewSet(ModelViewSet):
+    serializer_class = CartItemSerializer
+    def get_queryset(self):
+        return CartItem.objects.filter(cart_id=self.kwargs['cart_pk']).select_related('product')

@@ -1,6 +1,6 @@
 from decimal import Decimal
 from rest_framework import serializers
-from .models import Product, Collection, Review
+from .models import Cart, CartItem, Product, Collection, Review
 
 # nested serializer
 class CollectionSerializer(serializers.ModelSerializer):
@@ -37,35 +37,34 @@ class ReviewSerializer(serializers.ModelSerializer):
         product_id = self.context['product_id']
         return Review.objects.create(product_id=product_id, **validated_data)
 
-# verbose and repeated implementation
-"""
-class ProductSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    title = serializers.CharField(max_length=255)
-    # custom name
-    price = serializers.DecimalField(max_digits=6, decimal_places=2, source='unit_price')
-    # custom method field
-    price_with_tax = serializers.SerializerMethodField(method_name='get_price_with_tax')
-    # serializing relationships (first method)
-    collection = serializers.PrimaryKeyRelatedField(
-        queryset=Collection.objects.all()
-    )
-    # serializing relationships (second method)
-    collection_title = serializers.StringRelatedField(source='collection')
-    
-    # nested serializer
-    collection_nested = CollectionSerializer(source='collection')
-    
-    # Hyperlink serializer
-    collection_link = serializers.HyperlinkedRelatedField(
-        queryset=Collection.objects.all(),
-        view_name='collection-detail',
-        lookup_field='pk',
-        source='collection'
-    )
-"""
 
-"""
-    def get_price_with_tax(self, obj: Product) -> float:
-        return obj.unit_price * Decimal(1.1)
-"""
+class CartItemProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'title', 'unit_price']
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = CartItemProductSerializer()
+    total_price = serializers.SerializerMethodField(method_name='get_total_price')
+
+    def get_total_price(self, obj: CartItem) -> float:
+        return obj.product.unit_price * obj.quantity
+
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product', 'quantity', 'total_price']
+
+
+class CartSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+    items = CartItemSerializer(many=True, read_only=True)
+    total_price = serializers.SerializerMethodField(method_name='get_total_price')
+
+    def get_total_price(self, obj: Cart) -> float:
+        return sum(item.quantity * item.product.unit_price for item in obj.items.all())
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'items', 'total_price']
