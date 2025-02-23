@@ -1,5 +1,5 @@
 from decimal import Decimal
-from store.models import Cart, CartItem, Customer, Product, Collection, Review
+from .models import Cart, CartItem, Customer, Product, Collection, Review
 from rest_framework import serializers
 
 
