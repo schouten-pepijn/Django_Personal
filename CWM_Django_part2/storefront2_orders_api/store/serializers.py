@@ -6,7 +6,6 @@ from .models import (Cart, CartItem,
                      Product, Review)
 
 
-
 class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
