@@ -1,4 +1,4 @@
-from .permissions import IsAdminOrReadOnly
+from .permissions import FullDjangoModelPermissions, IsAdminOrReadOnly
 from .pagination import DefaultPagination
 from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
@@ -89,7 +89,7 @@ class CartItemViewSet(ModelViewSet):
 class CustomerViewSet(ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [FullDjangoModelPermissions]
     
     def get_permissions(self):
         if self.request.method == 'GET':
