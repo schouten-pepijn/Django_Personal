@@ -16,7 +16,7 @@ class Collection(models.Model):
         'Product', on_delete=models.SET_NULL, null=True, related_name='+', blank=True)
 
     def __str__(self) -> str:
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ['title']
@@ -37,7 +37,7 @@ class Product(models.Model):
     promotions = models.ManyToManyField(Promotion, blank=True)
 
     def __str__(self) -> str:
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ['title']
@@ -100,7 +100,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='items')
     product = models.ForeignKey(
         Product, on_delete=models.PROTECT, related_name='orderitems')
     quantity = models.PositiveSmallIntegerField()
