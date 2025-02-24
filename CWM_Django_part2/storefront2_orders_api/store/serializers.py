@@ -108,8 +108,8 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ['id', 'user_id', 'phone', 'birth_date', 'membership']    
-        
-        
+  
+
 class OrderItemSerializer(serializers.ModelSerializer):
     product = SimpleProductSerializer()
     class Meta:
@@ -151,3 +151,5 @@ class CreateOrderSerializer(serializers.Serializer):
             OrderItem.objects.bulk_create(order_items)
 
             Cart.objects.filter(pk=cart_id).delete()
+            
+            return order
