@@ -16,7 +16,7 @@ class Collection(models.Model):
         'Product', on_delete=models.SET_NULL, null=True, related_name='+', blank=True)
 
     def __str__(self) -> str:
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ['title']
@@ -37,10 +37,26 @@ class Product(models.Model):
     promotions = models.ManyToManyField(Promotion, blank=True)
 
     def __str__(self) -> str:
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ['title']
+
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='images'
+    )
+
+    image = models.ImageField(
+        upload_to='store/images',
+        null=True,
+        blank=True
+    )
+
+
 
 
 class Customer(models.Model):
