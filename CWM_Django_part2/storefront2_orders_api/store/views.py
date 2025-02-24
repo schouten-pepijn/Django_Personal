@@ -23,7 +23,7 @@ from .serializers import (AddCartItemSerializer, CartItemSerializer,
 class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer
     http_method_names = [
-        'get', 'patch', 'delete', 'head', 'options'
+        'get', 'post', 'patch', 'delete', 'head', 'options'
     ]
     
     def get_permissions(self):
