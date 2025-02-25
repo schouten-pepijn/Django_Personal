@@ -65,10 +65,10 @@ class ProductAdmin(admin.ModelAdmin):
             f'{updated_count} products were successfully updated.',
             messages.ERROR
         )
-        
+
     class Media:
         css = {
-            'all': ['styles.css']
+            'all': ['store.styles.css']
         }
 
 
