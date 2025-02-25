@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db import models
 from uuid import uuid4
+
+from .validators import validate_file_size
 
 
 class Promotion(models.Model):
@@ -53,8 +55,17 @@ class ProductImage(models.Model):
     image = models.ImageField(
         upload_to='store/images',
         null=True,
-        blank=True
+        blank=True,
+        validators=[validate_file_size]
     )
+    """
+    image = models.FileField(
+        upload_to='store/images',
+        null=True,
+        blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
+    )
+    """
 
 
 
