@@ -83,7 +83,9 @@ class AddCartItemSerializer(serializers.ModelSerializer):
 
         try:
             cart_item = CartItem.objects.get(
-                cart_id=cart_id, product_id=product_id)
+                cart_id=cart_id,
+                product_id=product_id
+            )
             cart_item.quantity += quantity
             cart_item.save()
             self.instance = cart_item
@@ -155,8 +157,8 @@ class CreateOrderSerializer(serializers.Serializer):
 
             cart_items = CartItem.objects \
                 .select_related('product') \
-                .filter(cart_id=cart_id)
-            order_items = [
+                    .filter(cart_id=cart_id)
+            order_items = [ 
                 OrderItem(
                     order=order,
                     product=item.product,
