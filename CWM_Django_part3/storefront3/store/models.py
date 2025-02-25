@@ -58,6 +58,7 @@ class ProductImage(models.Model):
         blank=True,
         validators=[validate_file_size]
     )
+    
     """
     image = models.FileField(
         upload_to='store/images',
