@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.mail import send_mail, mail_admins, BadHeaderError, EmailMessage
 from templated_mail.mail import BaseEmailMessage
+from .tasks.tasks import notify_customer
+
 def say_hello(request):
     try:
         send_mail('subject', 'message', 'tjY4o@example.com', ['tjY4o@example.com'])
@@ -20,5 +22,7 @@ def say_hello(request):
         
     except BadHeaderError:
         return HttpResponse('Invalid header found.')
+
+    notify_customer.delay('message')
 
     return render(request, 'hello.html', {'name': 'Mosh'})
