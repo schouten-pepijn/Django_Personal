@@ -182,3 +182,7 @@ EMAIL_PORT = 2525
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = 'XsBbG@example.com'
+
+ADMINS = [
+    ('Pepijn', 'XsBbG@example.com')
+]
