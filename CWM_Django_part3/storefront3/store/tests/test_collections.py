@@ -4,13 +4,20 @@ from django.contrib.auth.models import User
 import pytest
 
 
+@pytest.fixture
+def create_collection(api_client):
+    def do_create_collection(collection):
+        return api_client.post('/store/collections/', collection)
+    return do_create_collection
+
+
 @pytest.mark.django_db
 class TestCreateCollection:
     def test_if_user_is_anonymous_returns_401(self, api_client):
         # Arange
         
         # Act
-        response = client.post('/store/collections/', {'title': 'a'})
+        response = api_client.post('/store/collections/', {'title': 'a'})
         
         # Assert
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -21,7 +28,8 @@ class TestCreateCollection:
         # Act
         client = APITClient()
         client.force_authenticate(user={})
-        response = client.post('/store/collections/', {'title': 'a'})
+        
+        response = create_collection({'title': 'a'})
         
         # Assert
         assert response.status_code == status.HTTP_403_FORBIDDEN
