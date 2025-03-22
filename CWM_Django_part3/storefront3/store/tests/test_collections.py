@@ -6,11 +6,10 @@ import pytest
 
 @pytest.mark.django_db
 class TestCreateCollection:
-    def test_if_user_is_anonymous_returns_401(self):
+    def test_if_user_is_anonymous_returns_401(self, api_client):
         # Arange
         
         # Act
-        client = APITClient()
         response = client.post('/store/collections/', {'title': 'a'})
         
         # Assert
