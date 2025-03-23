@@ -1,8 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.mail import send_mail, mail_admins, BadHeaderError, EmailMessage
+from django.core.cache import cache
 from templated_mail.mail import BaseEmailMessage
 from .tasks.tasks import notify_customer
+import requests
+
 
 def say_hello(request):
     try:
@@ -25,4 +28,12 @@ def say_hello(request):
 
     notify_customer.delay('message')
 
-    return render(request, 'hello.html', {'name': 'Mosh'})
+    return render(request, 'hello.html', {'name': 'Pepijn'})
+
+def cached_hello(request):
+    key = 'httpbin_result'
+    if cache.get(key) is None:
+        response = requests.get('https://httpbin.org/delay/2')
+        data = response.json()
+        cache.set(key, data)
+    return render(request, 'hello.html', {'name': 'Pepijn'})
