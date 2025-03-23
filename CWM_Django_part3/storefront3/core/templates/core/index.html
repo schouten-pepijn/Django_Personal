@@ -1,9 +1,14 @@
+{% load static %}
 !<!DOCTYPE html>
 <html>
+    <head>
+        <title>Document</title>
+        <link rel="stylesheet" href="{% static 'core/styles.css' %}">
+    </head>
 <body>
-
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
+    <div class="home-page">
+        <img scr="{% static 'core/logo.svg' %}", alt="logo", class="logo">
+    </div>
 
 </body>
 </html>
