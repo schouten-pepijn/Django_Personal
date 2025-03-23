@@ -4,6 +4,7 @@ from django.core.mail import send_mail, mail_admins, BadHeaderError, EmailMessag
 from django.core.cache import cache
 from templated_mail.mail import BaseEmailMessage
 from .tasks.tasks import notify_customer
+from django.views.decorators.cache import cache_page
 import requests
 
 
@@ -35,5 +36,11 @@ def cached_hello(request):
     if cache.get(key) is None:
         response = requests.get('https://httpbin.org/delay/2')
         data = response.json()
-        cache.set(key, data)
+        cache.set(key, data, 10 * 60)
+    return render(request, 'hello.html', {'name': 'Pepijn'})
+
+@cache_page(5 * 60)
+def cached_hello_2(request):
+    response = requests.get('https://httpbin.org/delay/2')
+    data = response.json()
     return render(request, 'hello.html', {'name': 'Pepijn'})
